@@ -63,7 +63,7 @@
       color: #333;
     }
 
-    /* Adsterra banner area */
+    /* Adsterra areas */
 
     .ad-area {
       width: 100%;
@@ -85,7 +85,7 @@
       border-radius: 6px;
     }
 
-    /* Watch section */
+    /* Download / Watch section */
 
     .watch-section {
       margin: 30px 0 34px;
@@ -125,6 +125,10 @@
       text-transform: uppercase;
       transition: transform .15s ease;
       margin-bottom: 12px;
+    }
+
+    .watch-button:last-of-type {
+      margin-bottom: 0;
     }
 
     .watch-button:active {
@@ -250,6 +254,43 @@
       </p>
 
 
+      <!-- DOWNLOAD / WATCH BUTTONS AFTER 2ND PARAGRAPH -->
+
+      <section class="watch-section">
+
+        <div class="watch-now">
+          DOWNLOAD
+        </div>
+
+        <div class="watch-subtitle">
+          Choose an option below
+        </div>
+
+        <!-- Monetag Direct Link -->
+        <button
+          id="watchNowButton"
+          class="watch-button"
+          type="button"
+        >
+          📥 DOWNLOAD
+        </button>
+
+        <!-- Direct TeraBox -->
+        <button
+          id="watchVideoButton"
+          class="watch-button"
+          type="button"
+        >
+          ▶️ WATCH VIDEO
+        </button>
+
+        <div class="notice">
+          Watch Video opens the original video link directly.
+        </div>
+
+      </section>
+
+
       <!-- AD 3 + AD 4 -->
 
       <div class="ad-area">
@@ -328,47 +369,6 @@
         </div>
 
       </div>
-
-
-      <!-- WATCH SECTION -->
-
-      <section class="watch-section">
-
-        <div class="watch-now">
-          DOWNLOAD
-        </div>
-
-        <div class="watch-subtitle">
-          Choose an option below
-        </div>
-
-
-        <!-- MONETAG DIRECT LINK -->
-
-        <button
-          id="watchNowButton"
-          class="watch-button"
-          type="button"
-        >
-          📥 DOWNLOAD
-        </button>
-
-
-        <!-- DIRECT TERABOX -->
-
-        <button
-          id="watchVideoButton"
-          class="watch-button"
-          type="button"
-        >
-          ▶️ WATCH VIDEO
-        </button>
-
-        <div class="notice">
-          Watch Video opens the original video link directly.
-        </div>
-
-      </section>
 
 
       <!-- SECTION 4 -->
@@ -525,26 +525,21 @@
       let destination;
 
       try {
-
         destination = new URL(teraboxUrl);
-
       } catch (error) {
-
         alert("Invalid video link.");
         return;
-
       }
 
       if (
         destination.protocol !== "http:" &&
         destination.protocol !== "https:"
       ) {
-
         alert("Invalid video link.");
         return;
       }
 
-      /* Open original TeraBox directly */
+      /* Directly open original TeraBox link */
 
       window.location.href = destination.href;
 
