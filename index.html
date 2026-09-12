@@ -1,19 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script src="https://quge5.com/88/tag.min.js" data-zone="279405" async data-cfasync="false"></script>
+
+  <!-- MONETAG MULTITAG -->
+  <script
+    src="https://quge5.com/88/tag.min.js"
+    data-zone="279405"
+    async
+    data-cfasync="false">
+  </script>
+
   <meta charset="UTF-8">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
   <title>Apple History - Watch Video</title>
 
   <meta
     name="description"
-    content="Learn about the history of Apple and watch the video."
-  >
+    content="Learn about the history of Apple and watch the video.">
 
   <style>
+
     * {
       box-sizing: border-box;
     }
@@ -62,10 +72,7 @@
     }
 
     /* =========================
-       MONETAG AD AREA
-       Replace the content of
-       these boxes with your
-       Monetag ad code later.
+       AD AREAS
        ========================= */
 
     .ad-area {
@@ -131,19 +138,15 @@
       padding: 16px 20px;
       text-transform: uppercase;
       transition: transform 0.15s ease;
+      margin-bottom: 14px;
     }
 
     .watch-button:active {
       transform: scale(0.97);
     }
 
-    .watch-button:disabled {
-      opacity: 0.7;
-      cursor: wait;
-    }
-
     .notice {
-      margin-top: 12px;
+      margin-top: 4px;
       color: #aaaaaa;
       font-size: 12px;
     }
@@ -156,6 +159,7 @@
     }
 
     @media (max-width: 500px) {
+
       .container {
         padding: 10px 9px 30px;
       }
@@ -180,8 +184,11 @@
       .watch-button {
         font-size: 19px;
       }
+
     }
+
   </style>
+
 </head>
 
 <body>
@@ -191,6 +198,7 @@
     <article class="article">
 
       <h1>The History of Apple</h1>
+
 
       <!-- =========================
            PARAGRAPH 1
@@ -207,17 +215,16 @@
         an important name in the growing personal computer industry.
       </p>
 
-      <!-- TWO ADS AFTER PARAGRAPH 1 -->
+
+      <!-- TWO AD POSITIONS -->
 
       <div class="ad-area">
 
         <div class="ad-box">
-          <!-- MONETAG AD #1 GOES HERE -->
           Ad
         </div>
 
         <div class="ad-box">
-          <!-- MONETAG AD #2 GOES HERE -->
           Ad
         </div>
 
@@ -239,17 +246,16 @@
         user experience.
       </p>
 
-      <!-- TWO ADS AFTER PARAGRAPH 2 -->
+
+      <!-- TWO AD POSITIONS -->
 
       <div class="ad-area">
 
         <div class="ad-box">
-          <!-- MONETAG AD #3 GOES HERE -->
           Ad
         </div>
 
         <div class="ad-box">
-          <!-- MONETAG AD #4 GOES HERE -->
           Ad
         </div>
 
@@ -271,17 +277,16 @@
         prepared the company for a much larger transformation.
       </p>
 
-      <!-- TWO ADS AFTER PARAGRAPH 3 -->
+
+      <!-- TWO AD POSITIONS -->
 
       <div class="ad-area">
 
         <div class="ad-box">
-          <!-- MONETAG AD #5 GOES HERE -->
           Ad
         </div>
 
         <div class="ad-box">
-          <!-- MONETAG AD #6 GOES HERE -->
           Ad
         </div>
 
@@ -290,7 +295,6 @@
 
       <!-- =========================
            WATCH SECTION
-           AFTER PARAGRAPH 3
            ========================= -->
 
       <section class="watch-section">
@@ -300,19 +304,39 @@
         </div>
 
         <div class="watch-subtitle">
-          Click below to watch the video
+          Choose an option below
         </div>
 
+
+        <!-- =========================
+             BUTTON 1
+             MONETAG DIRECT LINK
+             ========================= -->
+
         <button
-          id="watchButton"
+          id="watchNowButton"
           class="watch-button"
-          type="button"
-        >
-          ▶ WATCH VIDEO
+          type="button">
+          🔥 WATCH NOW
         </button>
 
+
+        <!-- =========================
+             BUTTON 2
+             DIRECT TERABOX
+             NO DIRECT LINK AD
+             ========================= -->
+
+        <button
+          id="watchVideoButton"
+          class="watch-button"
+          type="button">
+          ▶️ WATCH VIDEO
+        </button>
+
+
         <div class="notice">
-          Your video will open after the advertisement.
+          Watch Video opens the original video link directly.
         </div>
 
       </section>
@@ -333,17 +357,16 @@
         part of everyday digital life.
       </p>
 
-      <!-- TWO ADS AFTER PARAGRAPH 4 -->
+
+      <!-- TWO AD POSITIONS -->
 
       <div class="ad-area">
 
         <div class="ad-box">
-          <!-- MONETAG AD #7 GOES HERE -->
           Ad
         </div>
 
         <div class="ad-box">
-          <!-- MONETAG AD #8 GOES HERE -->
           Ad
         </div>
 
@@ -365,17 +388,16 @@
         used by people around the world.
       </p>
 
-      <!-- TWO ADS AFTER PARAGRAPH 5 -->
+
+      <!-- TWO AD POSITIONS -->
 
       <div class="ad-area">
 
         <div class="ad-box">
-          <!-- MONETAG AD #9 GOES HERE -->
           Ad
         </div>
 
         <div class="ad-box">
-          <!-- MONETAG AD #10 GOES HERE -->
           Ad
         </div>
 
@@ -383,7 +405,7 @@
 
 
       <div class="footer">
-        © 2026 • Information page
+        ©️ 2026 • Information page
       </div>
 
     </article>
@@ -398,14 +420,16 @@
      * TERABOX DESTINATION
      * ============================================================
      *
-     * The bot will create links like:
+     * The Telegram bot will create links like:
      *
-     * https://YOUR-SITE.vercel.app/?url=TERABOX_LINK
+     * https://mterabox-shortener.vercel.app/?url=TERABOX_LINK
      *
-     * This code reads the "url" parameter automatically.
+     * This reads the "url" parameter automatically.
      */
 
-    const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(
+      window.location.search
+    );
 
     const teraboxUrl = params.get("url");
 
@@ -415,86 +439,39 @@
      * MONETAG DIRECT LINK
      * ============================================================
      *
-     * AFTER we get the correct Monetag Direct Link / OnClick
-     * code, we will configure it here.
-     *
-     * DO NOT put a random URL here.
+     * This is ONLY used by the WATCH NOW button.
      */
 
-    const MONETAG_DIRECT_LINK = "https://omg10.com/4/11782133";
+    const MONETAG_DIRECT_LINK =
+      "https://omg10.com/4/11782133";
 
 
     /*
      * ============================================================
-     * WATCH BUTTON
+     * WATCH NOW BUTTON
      * ============================================================
+     *
+     * WATCH NOW:
+     *
+     * User clicks it
+     *       ↓
+     * Monetag Direct Link opens
+     *
+     * It does NOT open the TeraBox link.
      */
 
-    const watchButton = document.getElementById("watchButton");
-
-    watchButton.addEventListener("click", function () {
-
-      /*
-       * Check that the bot supplied a TeraBox URL.
-       */
-
-      if (!teraboxUrl) {
-        alert("Video link is missing.");
-        return;
-      }
+    const watchNowButton =
+      document.getElementById("watchNowButton");
 
 
-      /*
-       * Basic URL validation.
-       */
+    watchNowButton.addEventListener(
+      "click",
+      function () {
 
-      let destination;
-
-      try {
-        destination = new URL(teraboxUrl);
-
-      } catch (error) {
-        alert("Invalid video link.");
-        return;
-      }
-
-
-      /*
-       * Prevent accidental javascript: or other dangerous schemes.
-       */
-
-      if (
-        destination.protocol !== "http:" &&
-        destination.protocol !== "https:"
-      ) {
-        alert("Invalid video link.");
-        return;
-      }
-
-
-      watchButton.disabled = true;
-      watchButton.textContent = "PLEASE WAIT...";
-
-
-      /*
-       * ------------------------------------------------------------
-       * MONETAG STEP
-       * ------------------------------------------------------------
-       *
-       * We will connect the official Monetag-supported ad method
-       * here after you receive the actual Monetag code.
-       *
-       * For now, the button simply opens the original destination.
-       *
-       * This temporary behavior is ONLY for testing the website.
-       * ------------------------------------------------------------
-       */
-
-      if (MONETAG_DIRECT_LINK) {
-
-        /*
-         * Open Monetag Direct Link in a new tab.
-         */
+        if (!MONETAG_DIRECT_LINK) {
+          alert("Advertisement is not available.");
+          return;
+        }
 
         window.open(
           MONETAG_DIRECT_LINK,
@@ -503,22 +480,77 @@
         );
 
       }
+    );
 
 
-      /*
-       * Go to the original TeraBox destination.
-       *
-       * The actual Monetag flow will be finalized once we have
-       * your Monetag ad code.
-       */
+    /*
+     * ============================================================
+     * WATCH VIDEO BUTTON
+     * ============================================================
+     *
+     * This button has NO Direct Link advertisement.
+     *
+     * User clicks it
+     *       ↓
+     * Original TeraBox link opens directly.
+     */
 
-      setTimeout(function () {
+    const watchVideoButton =
+      document.getElementById("watchVideoButton");
 
-        window.location.href = destination.href;
 
-      }, 800);
+    watchVideoButton.addEventListener(
+      "click",
+      function () {
 
-    });
+        if (!teraboxUrl) {
+          alert("Video link is missing.");
+          return;
+        }
+
+
+        /*
+         * Validate the supplied URL.
+         */
+
+        let destination;
+
+        try {
+
+          destination = new URL(teraboxUrl);
+
+        } catch (error) {
+
+          alert("Invalid video link.");
+          return;
+
+        }
+
+
+        /*
+         * Only allow HTTP and HTTPS links.
+         */
+
+        if (
+          destination.protocol !== "http:" &&
+          destination.protocol !== "https:"
+        ) {
+
+          alert("Invalid video link.");
+          return;
+
+        }
+
+
+        /*
+         * Open the ORIGINAL TeraBox destination directly.
+         */
+
+        window.location.href =
+          destination.href;
+
+      }
+    );
 
   </script>
 
