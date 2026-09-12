@@ -15,27 +15,34 @@ export default async function handler(req, res) {
 
   try {
     const update = req.body;
-
     const message = update?.message;
 
-    if (!message?.chat?.id || !message?.text) {
+    if (!message?.chat?.id) {
       return res.status(200).json({ ok: true });
     }
 
     const chatId = message.chat.id;
-    const text = message.text.trim();
 
     /*
-     * Find a TeraBox link
+     * Get text from either:
+     * 1. Normal text message
+     * 2. Photo caption
      */
-    const urlMatch = text.match(
-      /https?:\/\/[^\s]+/i
-    );
+    const text = (
+      message.caption ||
+      message.text ||
+      ""
+    ).trim();
+
+    /*
+     * Find the TeraBox URL
+     */
+    const urlMatch = text.match(/https?:\/\/[^\s]+/i);
 
     if (!urlMatch) {
       await sendTelegramMessage(
         chatId,
-        "Please send a valid TeraBox link."
+        "Please send a TeraBox link."
       );
 
       return res.status(200).json({ ok: true });
@@ -44,7 +51,7 @@ export default async function handler(req, res) {
     const teraboxUrl = urlMatch[0];
 
     /*
-     * Make sure it is a TeraBox-related URL
+     * Check that the URL is a TeraBox-related link
      */
     const lowerUrl = teraboxUrl.toLowerCase();
 
@@ -63,24 +70,63 @@ export default async function handler(req, res) {
     }
 
     /*
-     * Create our shortener link
+     * Create the Mshortener link
      */
     const shortenerUrl =
       "https://mterabox-shortener.vercel.app/?url=" +
       encodeURIComponent(teraboxUrl);
 
     /*
-     * Temporary reply.
-     * We will replace this with your exact
-     * header + image + footer template next.
+     * If user sent an IMAGE + TeraBox link,
+     * send the SAME Telegram image back.
      */
-    const reply =
-      "📥 Your link is ready!\n\n" +
-      shortenerUrl;
+    if (message.photo && message.photo.length > 0) {
 
+      const photo =
+        message.photo[message.photo.length - 1];
+
+      /*
+       * Header
+       */
+      await sendTelegramMessage(
+        chatId,
+        "Only Legends Know What Happened Here"
+      );
+
+      /*
+       * Same image.
+       * We reuse Telegram's file_id, so we do not
+       * download, edit, crop, or resize the image.
+       */
+      await sendTelegramPhoto(
+        chatId,
+        photo.file_id,
+        "Click Here & Enjoy Video 😍🌈👇\n\n" +
+        shortenerUrl
+      );
+
+      /*
+       * Footer
+       */
+      await sendTelegramMessage(
+        chatId,
+        "Diskwala 👇\n\n" +
+        shortenerUrl
+      );
+
+      return res.status(200).json({
+        ok: true
+      });
+    }
+
+    /*
+     * If the user sends only a TeraBox link,
+     * keep the normal text response working.
+     */
     await sendTelegramMessage(
       chatId,
-      reply
+      "📥 Your link is ready!\n\n" +
+      shortenerUrl
     );
 
     return res.status(200).json({
@@ -100,7 +146,7 @@ export default async function handler(req, res) {
 
 
 /*
- * Send a Telegram message
+ * Send normal Telegram message
  */
 async function sendTelegramMessage(chatId, text) {
 
@@ -123,6 +169,49 @@ async function sendTelegramMessage(chatId, text) {
         chat_id: chatId,
         text: text,
         disable_web_page_preview: false
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const errorText = await response.text();
+
+    throw new Error(
+      "Telegram API error: " + errorText
+    );
+  }
+}
+
+
+/*
+ * Send the SAME image received from the user
+ */
+async function sendTelegramPhoto(
+  chatId,
+  fileId,
+  caption
+) {
+
+  const token = process.env.BOT_TOKEN;
+
+  if (!token) {
+    throw new Error("BOT_TOKEN is missing");
+  }
+
+  const response = await fetch(
+    `https://api.telegram.org/bot${token}/sendPhoto`,
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        chat_id: chatId,
+        photo: fileId,
+        caption: caption,
+        disable_notification: false
       })
     }
   );
