@@ -1,4 +1,5 @@
 export default async function handler(req, res) {
+
   if (req.method === "GET") {
     return res.status(200).json({
       ok: true,
@@ -14,104 +15,129 @@ export default async function handler(req, res) {
   }
 
   try {
+
     const update = req.body;
     const message = update?.message;
 
     if (!message?.chat?.id) {
-      return res.status(200).json({ ok: true });
+      return res.status(200).json({
+        ok: true
+      });
     }
 
     const chatId = message.chat.id;
 
+
     /*
-     * Get text from either:
-     * 1. Normal text message
-     * 2. Photo caption
+     * Telegram puts the text of a photo message
+     * inside message.caption.
+     *
+     * For normal text messages it is message.text.
      */
-    const text = (
+
+    const originalText = (
       message.caption ||
       message.text ||
       ""
-    ).trim();
+    );
+
 
     /*
-     * Find the TeraBox URL
+     * Find the TeraBox URL inside the user's
+     * original message.
      */
-    const urlMatch = text.match(/https?:\/\/[^\s]+/i);
+
+    const urlMatch =
+      originalText.match(/https?:\/\/[^\s]+/i);
+
+
+    /*
+     * If there is no URL, do nothing.
+     */
 
     if (!urlMatch) {
-      await sendTelegramMessage(
-        chatId,
-        "Please send a TeraBox link."
-      );
-
-      return res.status(200).json({ ok: true });
+      return res.status(200).json({
+        ok: true
+      });
     }
 
-    const teraboxUrl = urlMatch[0];
+
+    const originalUrl = urlMatch[0];
+
 
     /*
-     * Check that the URL is a TeraBox-related link
+     * Check that the URL is a TeraBox URL.
      */
-    const lowerUrl = teraboxUrl.toLowerCase();
+
+    const lowerUrl =
+      originalUrl.toLowerCase();
 
     const isTeraBox =
       lowerUrl.includes("terabox") ||
       lowerUrl.includes("teraboxlink") ||
       lowerUrl.includes("1024tera");
 
-    if (!isTeraBox) {
-      await sendTelegramMessage(
-        chatId,
-        "Please send a valid TeraBox link."
-      );
 
-      return res.status(200).json({ ok: true });
+    if (!isTeraBox) {
+      return res.status(200).json({
+        ok: true
+      });
     }
 
+
     /*
-     * Create the Mshortener link
+     * Create the new shortener URL.
      */
+
     const shortenerUrl =
       "https://mterabox-shortener.vercel.app/?url=" +
-      encodeURIComponent(teraboxUrl);
+      encodeURIComponent(originalUrl);
+
 
     /*
-     * If user sent an IMAGE + TeraBox link,
-     * send the SAME Telegram image back.
+     * IMPORTANT:
+     *
+     * Replace ONLY the original TeraBox URL.
+     *
+     * Everything else remains exactly as
+     * the user wrote it.
      */
-    if (message.photo && message.photo.length > 0) {
 
-      const photo =
-        message.photo[message.photo.length - 1];
-
-      /*
-       * Header
-       */
-      await sendTelegramMessage(
-        chatId,
-        "Only Legends Know What Happened Here"
+    const newText =
+      originalText.replace(
+        originalUrl,
+        shortenerUrl
       );
 
-      /*
-       * Same image.
-       * We reuse Telegram's file_id, so we do not
-       * download, edit, crop, or resize the image.
-       */
+
+    /*
+     * If the user sent an IMAGE + caption:
+     *
+     * Send the SAME Telegram image using its
+     * original file_id.
+     *
+     * No resize.
+     * No crop.
+     * No editing.
+     * No new header.
+     * No new footer.
+     * No Diskwala.
+     */
+
+    if (
+      message.photo &&
+      message.photo.length > 0
+    ) {
+
+      const photo =
+        message.photo[
+          message.photo.length - 1
+        ];
+
       await sendTelegramPhoto(
         chatId,
         photo.file_id,
-        "Click Here & Enjoy Video 😍🌈👇\n\n" +
-        shortenerUrl
-      );
-
-      /*
-       * Footer
-       */
-      await sendTelegramMessage(
-        chatId,
-        "Diskwala 👇\n\n" +
-        shortenerUrl
+        newText
       );
 
       return res.status(200).json({
@@ -119,19 +145,23 @@ export default async function handler(req, res) {
       });
     }
 
+
     /*
-     * If the user sends only a TeraBox link,
-     * keep the normal text response working.
+     * For a normal text message:
+     * send the user's original text with
+     * ONLY the TeraBox URL replaced.
      */
+
     await sendTelegramMessage(
       chatId,
-      "📥 Your link is ready!\n\n" +
-      shortenerUrl
+      newText
     );
+
 
     return res.status(200).json({
       ok: true
     });
+
 
   } catch (error) {
 
@@ -141,62 +171,31 @@ export default async function handler(req, res) {
       ok: false,
       error: "Internal server error"
     });
+
   }
 }
 
 
 /*
- * Send normal Telegram message
+ * Send the SAME Telegram photo.
  */
-async function sendTelegramMessage(chatId, text) {
 
-  const token = process.env.BOT_TOKEN;
-
-  if (!token) {
-    throw new Error("BOT_TOKEN is missing");
-  }
-
-  const response = await fetch(
-    `https://api.telegram.org/bot${token}/sendMessage`,
-    {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json"
-      },
-
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: text,
-        disable_web_page_preview: false
-      })
-    }
-  );
-
-  if (!response.ok) {
-    const errorText = await response.text();
-
-    throw new Error(
-      "Telegram API error: " + errorText
-    );
-  }
-}
-
-
-/*
- * Send the SAME image received from the user
- */
 async function sendTelegramPhoto(
   chatId,
   fileId,
   caption
 ) {
 
-  const token = process.env.BOT_TOKEN;
+  const token =
+    process.env.BOT_TOKEN;
+
 
   if (!token) {
-    throw new Error("BOT_TOKEN is missing");
+    throw new Error(
+      "BOT_TOKEN is missing"
+    );
   }
+
 
   const response = await fetch(
     `https://api.telegram.org/bot${token}/sendPhoto`,
@@ -209,18 +208,81 @@ async function sendTelegramPhoto(
 
       body: JSON.stringify({
         chat_id: chatId,
+
+        /*
+         * Telegram file_id means the original
+         * image is reused exactly.
+         */
         photo: fileId,
-        caption: caption,
-        disable_notification: false
+
+        /*
+         * User's complete original caption,
+         * with ONLY the TeraBox URL replaced.
+         */
+        caption: caption
       })
     }
   );
 
+
   if (!response.ok) {
-    const errorText = await response.text();
+
+    const errorText =
+      await response.text();
 
     throw new Error(
-      "Telegram API error: " + errorText
+      "Telegram API error: " +
+      errorText
+    );
+  }
+}
+
+
+/*
+ * Send a normal text message.
+ */
+
+async function sendTelegramMessage(
+  chatId,
+  text
+) {
+
+  const token =
+    process.env.BOT_TOKEN;
+
+
+  if (!token) {
+    throw new Error(
+      "BOT_TOKEN is missing"
+    );
+  }
+
+
+  const response = await fetch(
+    `https://api.telegram.org/bot${token}/sendMessage`,
+    {
+      method: "POST",
+
+      headers: {
+        "Content-Type": "application/json"
+      },
+
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: text
+      })
+    }
+  );
+
+
+  if (!response.ok) {
+
+    const errorText =
+      await response.text();
+
+    throw new Error(
+      "Telegram API error: " +
+      errorText
     );
   }
 }
